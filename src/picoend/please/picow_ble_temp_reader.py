@@ -229,7 +229,7 @@ def sleep_ms_flash_led(self, flash_count, delay_ms):
         delay_ms -= 1000
 
 def print_temp(result):
-    print("read temp: %.2f degc" % result)
+    print(result)
 
 def demo(ble, central):
     not_found = False
