@@ -215,11 +215,11 @@ class BLETemperatureCentral:
         try:
             if self.receivedSize == 0:
                 self._value = struct.unpack("<h",data)[0]/100   
-                receivedSize = 1              
+                self.receivedSize = 1              
                                  
             elif self.receivedSize == 1:
                 self._value = struct.unpack(f"<{self.value}s", data)
-                receivedSize = 0
+                self.receivedSize = 0
         except OSError as error:
             print(error)
 
