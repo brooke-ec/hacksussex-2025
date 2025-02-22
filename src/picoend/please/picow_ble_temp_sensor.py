@@ -4,6 +4,8 @@
 # any connected central every 10 seconds.
 
 from asyncio import sleep
+
+from numpy import meshgrid
 import bluetooth
 import random
 import struct
@@ -65,22 +67,27 @@ class BLETemperature:
             self._advertise()
         elif event == _IRQ_GATTS_INDICATE_DONE:
             conn_handle, value_handle, status = data
+    def sender(self,type,message,notify=False, indicate=False):
 
-    def update_temperature(self, notify=False, indicate=False):
-        # Write the local value, ready for a central to read.
-        temp_deg_c = 'i am a string'
-        print(temp_deg_c);
-        self._ble.gatts_write(self._handle, struct.pack(f"<h", len(temp_deg_c)))
-        time.sleep_ms(60)
-        self._ble.gatts_write(self._handle, struct.pack(f"<{len(temp_deg_c)}s", temp_deg_c))
-        if notify or indicate:
-            for conn_handle in self._connections:
+        if type == 0:
+            self._ble.gatts_write(self._handle, struct.pack(f"<h", int(message)))
+        elif type == 1:
+            self._ble.gatts_write(self._handle, struct.pack(f"<{len(message)}s", message))
+        for conn_handle in self._connections:
+            if notify or indicate:
                 if notify:
                     # Notify connected centrals.
                     self._ble.gatts_notify(conn_handle, self._handle)
                 if indicate:
                     # Indicate connected centrals.
                     self._ble.gatts_indicate(conn_handle, self._handle)
+    def update_temperature(self, notify=False, indicate=False):
+        # Write the local value, ready for a central to read.
+        temp_deg_c = 'i am a string'
+        print(temp_deg_c);
+        print(len(temp_deg_c))
+        self.sender(0,len(temp_deg_c),notify,indicate)
+        self.sender(1,temp_deg_c,notify,indicate)
 
     def _advertise(self, interval_us=500000):
         self._ble.gap_advertise(interval_us, adv_data=self._payload)
