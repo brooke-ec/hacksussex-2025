@@ -4,8 +4,6 @@
 # any connected central every 10 seconds.
 
 from asyncio import sleep
-
-from numpy import meshgrid
 import bluetooth
 import random
 import struct
@@ -81,6 +79,7 @@ class BLETemperature:
                 if indicate:
                     # Indicate connected centrals.
                     self._ble.gatts_indicate(conn_handle, self._handle)
+                
     def update_temperature(self, notify=False, indicate=False):
         # Write the local value, ready for a central to read.
         temp_deg_c = 'i am a string'
