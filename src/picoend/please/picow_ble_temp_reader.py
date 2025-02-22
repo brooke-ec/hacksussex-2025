@@ -227,7 +227,7 @@ class BLETemperatureCentral:
                     self.size = str(self.size)[1:len(str(self.size))] 
                     print(self.size)
                 self.size = int(self.size) - 1
-                self._value = struct.unpack(f"<{int(self.size)}s", data)
+                self._value = struct.unpack(f"<{(self.size)}s", data)
                 self.receivedSize = 0
         except OSError as error:
             print(error)
