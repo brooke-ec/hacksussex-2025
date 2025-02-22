@@ -11,26 +11,33 @@
 	z-index: 2;
 }
 .chatBorder{
-	border-style: solid;
-	border-radius: 30px;
-	border-width: 4px;
-	border-color: #7c55ad;
 	padding: 10px 50px 20px 50px;
     gap: 30px;
     flex-direction: column;
     display: flex;
 }
 .messageContainer{
+    --user-color: #7c55ad;
     gap: 5px;
-    flex-direction: column;
+    flex-direction: row;
     display: flex;
+    border-style: groove;
+    border-width: 0px 0px 3px 0px;
 }
 .messageTextBox{
-	border-style: solid;
-	border-radius: 0px 30px 30px 30px;
-	border-width: 4px;
-	border-color: #7c55ad;
 	padding: 10px 50px 20px 50px;
-    background-color: #ece5e5;
-    width: fit-content;
+    background-color: white;
+    border-radius: 10px;
+}
+.messageTextBoxGradient{
+    background-image: linear-gradient(to bottom right, var(--user-color) 0%, transparent 50%);
+    margin: 10px;
+    padding: 2px;
+    border-radius: 10px;
+}
+.userIconThing{
+    border-radius: 50%;
+    background-color: var(--user-color);
+    aspect-ratio: 1 / 1;
+    height: 80px;
 }
