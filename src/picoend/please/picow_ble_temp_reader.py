@@ -215,7 +215,6 @@ class BLETemperatureCentral:
         # Data is sint16 in degrees Celsius with a resolution of 0.01 degrees Celsius.
         try:
             if self.receivedSize == 0:
-                print(data)
                 self.size = struct.unpack("<h",data)[0] 
                 print(self.size)
                 self.receivedSize = 1              
