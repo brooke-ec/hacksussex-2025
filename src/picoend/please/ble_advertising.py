@@ -46,7 +46,7 @@ def advertising_payload(limited_disc=False, br_edr=False, name=None, services=No
 
     # See org.bluetooth.characteristic.gap.appearance.xml
     if appearance:
-        _append(_ADV_TYPE_APPEARANCE, struct.pack("<s", appearance))
+        _append(_ADV_TYPE_APPEARANCE, struct.pack("s", appearance))
 
     return payload
 
@@ -71,7 +71,7 @@ def decode_services(payload):
     for u in decode_field(payload, _ADV_TYPE_UUID16_COMPLETE):
         services.append(bluetooth.UUID(struct.unpack("<h", u)[0]))
     for u in decode_field(payload, _ADV_TYPE_UUID32_COMPLETE):
-        services.append(bluetooth.UUID(struct.unpack("<s", u)[0]))
+        services.append(bluetooth.UUID(struct.unpack("s", u)[0]))
     for u in decode_field(payload, _ADV_TYPE_UUID128_COMPLETE):
         services.append(bluetooth.UUID(u))
     return services
