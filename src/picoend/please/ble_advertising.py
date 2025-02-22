@@ -24,7 +24,7 @@ def advertising_payload(limited_disc=False, br_edr=False, name=None, services=No
 
     def _append(adv_type, value):
         nonlocal payload
-        payload += struct.pack("BB", len(value) + 1, adv_type) + value
+        payload += struct.pack("B", len(value) + 1, adv_type) + value
 
     _append(
         _ADV_TYPE_FLAGS,
