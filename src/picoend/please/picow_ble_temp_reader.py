@@ -9,6 +9,7 @@ from ble_advertising import decode_services, decode_name
 from micropython import const
 from machine import Pin
 
+
 _IRQ_CENTRAL_CONNECT = const(1)
 _IRQ_CENTRAL_DISCONNECT = const(2)
 _IRQ_GATTS_WRITE = const(3)
@@ -49,6 +50,7 @@ _ENV_SENSE_SERVICE = (
 
 class BLETemperatureCentral:
     def __init__(self, ble):
+        self.receivedSize = 0
         self._ble = ble
         self._ble.active(True)
         self._ble.irq(self._irq)
@@ -211,7 +213,13 @@ class BLETemperatureCentral:
     def _update_value(self, data):
         # Data is sint16 in degrees Celsius with a resolution of 0.01 degrees Celsius.
         try:
-            self._value = struct.unpack("<12s", data)
+            if self.receivedSize == 0:
+                self._value = struct.unpack("<h",data)   
+                receivedSize = 1  
+                                 
+            elif self.receivedSize == 1:
+                self._value = struct.unpack(f"<{self.value}s", data)
+                receivedSize = 0
         except OSError as error:
             print(error)
 
