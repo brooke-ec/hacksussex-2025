@@ -71,7 +71,7 @@ class BLETemperature:
             while len(message)<3:
                 message = "0" + message
             print(message)
-            self._ble.gatts_write(self._handle, struct.pack("<3s", int(message * 100)))
+            self._ble.gatts_write(self._handle, struct.pack("<3s", str(message)))
         elif type == 1:
             self._ble.gatts_write(self._handle, struct.pack(f"<{len(message)}s", message))
         for conn_handle in self._connections:
@@ -88,7 +88,8 @@ class BLETemperature:
         temp_deg_c = 'i am a string'
         print(temp_deg_c);
         print(len(temp_deg_c))
-        self.sender(0,(len(temp_deg_c)),notify,indicate)
+        self.sender(0,str((len(temp_deg_c))),notify,indicate)
+        time.sleep(15)
         self.sender(1,temp_deg_c,notify,indicate)
 
     def _advertise(self, interval_us=500000):

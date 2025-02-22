@@ -217,6 +217,7 @@ class BLETemperatureCentral:
             if self.receivedSize == 0:
                 self.size = struct.unpack("<3s", data)[0]
                 print(self.size)
+                self.size = self.size[2:5]
                 self.receivedSize = 1              
                                  
             elif self.receivedSize == 1:
