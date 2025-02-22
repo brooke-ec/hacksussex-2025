@@ -66,9 +66,9 @@ class BLETemperature:
         elif event == _IRQ_GATTS_INDICATE_DONE:
             conn_handle, value_handle, status = data
     def sender(self,type,message,notify=False, indicate=False):
-
+        print(message)
         if type == 0:
-            self._ble.gatts_write(self._handle, struct.pack(f"<h", int(message)))
+            self._ble.gatts_write(self._handle, struct.pack(f"@h", int(message)))
         elif type == 1:
             self._ble.gatts_write(self._handle, struct.pack(f"<{len(message)}s", message))
         for conn_handle in self._connections:
