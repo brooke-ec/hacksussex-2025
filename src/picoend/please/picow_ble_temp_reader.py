@@ -214,6 +214,7 @@ class BLETemperatureCentral:
     def _update_value(self, data):
         # Data is sint16 in degrees Celsius with a resolution of 0.01 degrees Celsius.
         try:
+            print (self.receivedSize)
             if self.receivedSize == 0:
                 self.size = struct.unpack("<3s", data)[0]
                 print(self.size)
@@ -226,8 +227,8 @@ class BLETemperatureCentral:
                 while str(self.size)[0] == "0":
                     self.size = str(self.size)[1:len(str(self.size))] 
                     print(self.size)
-                self.size = int(self.size)
-                self._value = struct.unpack(f"<13s", data)
+                self.size = int(self.size) - 1
+                self._value = struct.unpack(f"<{(self.size)}s", data)
                 self.receivedSize = 0
         except OSError as error:
             print(error)
