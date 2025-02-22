@@ -1,3 +1,5 @@
+# This example finds and connects to a BLE temperature sensor (e.g. the one in ble_temperature.py).
+
 import bluetooth
 import random
 import struct
@@ -209,7 +211,7 @@ class BLETemperatureCentral:
     def _update_value(self, data):
         # Data is sint16 in degrees Celsius with a resolution of 0.01 degrees Celsius.
         try:
-            self._value = struct.unpack("s", data)
+            self._value = struct.unpack("<h", data)[0] / 100
         except OSError as error:
             print(error)
 
@@ -229,7 +231,7 @@ def sleep_ms_flash_led(self, flash_count, delay_ms):
         delay_ms -= 1000
 
 def print_temp(result):
-    print(result)
+    print("read temp: %.2f degc" % result)
 
 def demo(ble, central):
     not_found = False
