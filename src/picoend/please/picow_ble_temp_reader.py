@@ -209,7 +209,7 @@ class BLETemperatureCentral:
     def _update_value(self, data):
         # Data is sint16 in degrees Celsius with a resolution of 0.01 degrees Celsius.
         try:
-            self._value = struct.unpack("<h", data)[0] / 100
+            self._value = struct.unpack("<s", data)[0] / 100
         except OSError as error:
             print(error)
 
