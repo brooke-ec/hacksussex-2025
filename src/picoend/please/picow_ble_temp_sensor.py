@@ -68,8 +68,8 @@ class BLETemperature:
     def update_temperature(self, notify=False, indicate=False):
         # Write the local value, ready for a central to read.
         temp_deg_c = 'hi im pi 2'
-        print("write temp %.2f degc" % temp_deg_c);
-        self._ble.gatts_write(self._handle, struct.pack("<h", temp_deg_c))
+        print(temp_deg_c);
+        self._ble.gatts_write(self._handle, struct.pack("<s", temp_deg_c))
         if notify or indicate:
             for conn_handle in self._connections:
                 if notify:
