@@ -226,7 +226,8 @@ class BLETemperatureCentral:
                 while str(self.size)[0] == "0":
                     self.size = str(self.size)[1:len(str(self.size))] 
                     print(self.size)
-                self._value = struct.unpack(f"<{int(self.size)+7}s", data)
+                self.size = int(self.size) +7
+                self._value = struct.unpack(f"<{int(self.size)}s", data)
                 self.receivedSize = 0
         except OSError as error:
             print(error)
