@@ -9,8 +9,21 @@
     href="https://cdn.jsdelivr.net/npm/greset@2/greset.css"
 />
     <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
+    <link rel='stylesheet' type='text/css' media='screen' href='chat.css'>
     <script src='main.js'></script>
+    <script src='chat.js'></script>
 </head>
+<template>
+    <div class="messageContainer">
+        <div class="userIconThing"></div>
+            <div style="flex-grow: 1;">
+                <h3>Name</h3>
+                <div class="messageTextBoxGradient">
+                    <div class="messageTextBox">Message</div>
+                </div>
+            </div>
+    </div>
+</template>
 <body>
     <div class="square squareAnimatorOne" style="animation-delay: -30s; top: 2vh;"></div>
     <div class="square squareAnimatorOne" style="animation-delay: -60s; top: 2vh;"></div>
@@ -26,11 +39,15 @@
     <div class="square squareAnimatorOne" style="animation-delay: -30s; top: 72vh;"></div>
     <div class="square squareAnimatorOne" style="animation-delay: -23s; top: 93vh;"></div>
     <main>
-            <div class="centralBody">
-                <h1>Communiko</h1>
-                <input type="text" id="name" name="name" placeholder="Enter Name" autocomplete="off" autofocus/>
-                <button type="button" onclick="storeNameandRedirect(document.getElementById('name').value)">Connect</button>
+        <div class="chatBody">
+            <div class="chatBorder">
+                
             </div>
+            <div class="messageSenderContainer">
+                <input type="text" id="message" name="message" placeholder="Message" autocomplete="off" autofocus/>
+                <button type="button" onclick="sendNewMessage(localStorage.getItem('name'), document.getElementById('message').value)">Send message!</button>
+            </div>
+        </div>
     </main>
 </body>
 </html>

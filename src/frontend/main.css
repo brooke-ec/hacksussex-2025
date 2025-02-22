@@ -1,0 +1,93 @@
+body {
+    background-image: linear-gradient(to bottom right, #6c3baa, #9b76ca);
+    background-size: 400% 400%;
+    animation-name: backgroundAnim;
+    animation-duration: 15s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease;
+}
+main{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 100vh;
+	padding: 50px;
+}
+
+@keyframes backgroundAnim {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+@keyframes moveRightAnim {
+	from {
+		transform: translate(-10vw) rotate(0.25turn);
+	}
+	to {
+		transform: translate(110vw) rotate(1turn);
+	}
+}
+.square{
+	aspect-ratio: 1 / 1;
+	border-style: solid;
+	border-width: 3.5px;
+	border-color: #7c55ad;
+	position: fixed;
+	width: 10vw
+	
+}
+.squareAnimatorOne{
+    animation-name: moveRightAnim;
+    animation-duration: 120s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+.centralBody{
+	background-color: white;
+	padding: 10px 50px 20px 50px;
+	margin-left: auto;
+	margin-right: auto;
+	border-style: solid;
+	border-radius: 30px;
+	border-width: 4px;
+	border-color: #7c55ad;
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+	z-index: 2;
+}
+input{
+	border-style: solid;
+	border-width: 3px;
+	border-radius: 100px;
+	border-color: #7c55ad;
+	text-align: center;
+	font-size: large;
+	padding: 10px;
+}
+button{
+	border-radius: 100px;
+	background-color: #343434;
+	color: white;
+	text-align: center;
+	font-size: large;
+	padding: 10px;
+	margin: 0 15px;
+	transition: background-color 250ms;
+	box-shadow: 2px 2px 2px black;
+}
+button:hover{
+	background-color: #494848;
+}
+button:active{
+	box-shadow: none;
+}
+h1{
+	text-align: center;
+}
