@@ -1,7 +1,5 @@
 # This example finds and connects to a BLE temperature sensor (e.g. the one in ble_temperature.py).
 
-from numpy import size
-from rsa import sign
 import bluetooth
 import random
 import struct
@@ -217,8 +215,8 @@ class BLETemperatureCentral:
         # Data is sint16 in degrees Celsius with a resolution of 0.01 degrees Celsius.
         try:
             if self.receivedSize == 0:
-                self.size = struct.unpack("<d",data)[0]/100   
-                print(size)
+                self.size = struct.unpack("<h",data)[0]/100   
+                print(self.size)
                 self.receivedSize = 1              
                                  
             elif self.receivedSize == 1:
