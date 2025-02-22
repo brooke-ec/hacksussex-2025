@@ -71,7 +71,7 @@ def decode_name(payload):
 def decode_services(payload):
     services = []
     for u in decode_field(payload, _ADV_TYPE_UUID16_COMPLETE):
-        services.append(bluetooth.UUID(struct.unpack("<s", u)[0]))
+        services.append(bluetooth.UUID(struct.unpack("<h", u)[0]))
     for u in decode_field(payload, _ADV_TYPE_UUID32_COMPLETE):
         services.append(bluetooth.UUID(struct.unpack("<d", u)[0]))
     for u in decode_field(payload, _ADV_TYPE_UUID128_COMPLETE):
