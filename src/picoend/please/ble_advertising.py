@@ -48,7 +48,7 @@ def advertising_payload(limited_disc=False, br_edr=False, name=None, services=No
 
     # See org.bluetooth.characteristic.gap.appearance.xml
     if appearance:
-        _append(_ADV_TYPE_APPEARANCE, struct.pack("<s", appearance))
+        _append(_ADV_TYPE_APPEARANCE, struct.pack("<128s", appearance))
 
     return payload
 
