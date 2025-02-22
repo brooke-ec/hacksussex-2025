@@ -26,11 +26,11 @@
     <div class="square squareAnimatorOne" style="animation-delay: -30s; top: 72vh;"></div>
     <div class="square squareAnimatorOne" style="animation-delay: -23s; top: 93vh;"></div>
     <main>
-        <div class="centralBody">
-            <h1>Communiko</h1>
-            <input type="text" id="name" name="name" placeholder="Enter Name" autocomplete="off" autofocus/>
-            <button type="button">Connect</button>
-        </div>
+            <div class="centralBody">
+                <h1>Communiko</h1>
+                <input type="text" id="name" name="name" placeholder="Enter Name" autocomplete="off" autofocus/>
+                <button type="button" onclick="storeNameandRedirect(document.getElementById('name').value)">Connect</button>
+            </div>
     </main>
 </body>
 </html>
