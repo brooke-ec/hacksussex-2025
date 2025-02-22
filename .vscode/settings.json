@@ -1,4 +1,4 @@
 {
     "python.analysis.typeCheckingMode": "strict",
-    "liveServer.settings.root": "./src/html"
+    "liveServer.settings.root": "./src/frontend"
 }
