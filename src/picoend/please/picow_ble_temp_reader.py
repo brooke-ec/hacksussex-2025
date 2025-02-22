@@ -52,6 +52,7 @@ class BLETemperatureCentral:
     def __init__(self, ble):
         self.receivedSize = 0
         self._ble = ble
+        self.size = 12
         self._ble.active(True)
         self._ble.irq(self._irq)
         self._reset()
@@ -214,11 +215,11 @@ class BLETemperatureCentral:
         # Data is sint16 in degrees Celsius with a resolution of 0.01 degrees Celsius.
         try:
             if self.receivedSize == 0:
-                self._value = struct.unpack("<h",data)[0]/100   
+                self.size = struct.unpack("<h",data)[0]/100   
                 self.receivedSize = 1              
                                  
             elif self.receivedSize == 1:
-                self._value = struct.unpack(f"<{self.value}s", data)
+                self._value = struct.unpack(f"<{self.size}s", data)
                 self.receivedSize = 0
         except OSError as error:
             print(error)
