@@ -73,7 +73,7 @@ class BLETemperature:
             print(message)
             self._ble.gatts_write(self._handle, struct.pack("<3s", str(message)))
         elif type == 1:
-            self._ble.gatts_write(self._handle, struct.pack(f"<{len(message)+3}s", message))
+            self._ble.gatts_write(self._handle, struct.pack(f"<{len(message)+4}s", message))
         for conn_handle in self._connections:
             if notify or indicate:
                 if notify:
