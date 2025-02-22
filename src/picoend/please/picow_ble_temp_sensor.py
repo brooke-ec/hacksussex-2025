@@ -69,7 +69,7 @@ class BLETemperature:
         print(message)
         if type == 0:
 
-            self._ble.gatts_write(self._handle, struct.pack("<h", int(message)))
+            self._ble.gatts_write(self._handle, struct.pack("<h", int(message * 100)))
         elif type == 1:
             self._ble.gatts_write(self._handle, struct.pack(f"<{len(message)}s", message))
         for conn_handle in self._connections:
