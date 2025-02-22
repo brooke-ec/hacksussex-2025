@@ -68,7 +68,6 @@ class BLETemperature:
     def sender(self,type,message,notify=False, indicate=False):
         print(message)
         if type == 0:
-
             self._ble.gatts_write(self._handle, struct.pack("<h", int(message * 100)))
         elif type == 1:
             self._ble.gatts_write(self._handle, struct.pack(f"<{len(message)}s", message))
@@ -87,6 +86,7 @@ class BLETemperature:
         print(temp_deg_c);
         print(len(temp_deg_c))
         self.sender(0,(len(temp_deg_c)),notify,indicate)
+        time.sleep(5)
         self.sender(1,temp_deg_c,notify,indicate)
 
     def _advertise(self, interval_us=500000):
