@@ -59,21 +59,20 @@ async def listen():
         await Peer(connection).start()
 
 async def search():
-    while True:
-        async with aioble.scan(0, active=True) as scanner:
-            async for result in scanner:
-                print(result.device)
-                if  (
-                    result.name() == "communiko" and
-                    _SERVICE_UUID in result.services() and
-                    result.device.addr_hex() not in peers
-                ):
-                    device = result.device
-                    print(f"Found Connection {device.addr_hex()}")
-                    connection = await result.device.connect()
-                    if connection is None: continue
-                    scanner.cancel()
-                    await Peer(connection).start()
+    async with aioble.scan(0, 30000, 30000, active=True) as scanner:
+        async for result in scanner:
+            print(result.device)
+            if  (
+                result.name() == "communiko" and
+                _SERVICE_UUID in result.services() and
+                result.device.addr_hex() not in peers
+            ):
+                device = result.device
+                print(f"Found Connection {device.addr_hex()}")
+                connection = await result.device.connect()
+                if connection is None: continue
+                scanner.cancel()
+                await Peer(connection).start()
 
 async def main():
     await asyncio.gather(listen(), search())
