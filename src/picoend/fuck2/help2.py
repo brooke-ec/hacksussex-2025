@@ -3,7 +3,7 @@ from machine import Pin
 import bluetooth
 from ble_simple_peripheral import BLESimplePeripheral
 import time
-import BLEScanner 
+from BLEScanner import BLEScanner
 
 # Create a Bluetooth Low Energy (BLE) object
 ble = bluetooth.BLE()
@@ -20,6 +20,7 @@ not_found = False
 pin = Pin(0, Pin.IN, Pin.PULL_UP)
 
 while True:
+    x = BLEScanner(sp,"mpy-uart")
     # Check if the pin value is 0 and if debounce time has elapsed (more than 300 milliseconds)
     if ((pin.value() is 0) and (time.ticks_ms()-debounce_time) > 300):
         # Check if the BLE connection is established
