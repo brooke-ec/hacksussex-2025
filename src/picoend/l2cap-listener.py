@@ -11,7 +11,7 @@ async def main():
     connection = await aioble.advertise(1000, name="communiko", services=[_COMMUNIKO_UUID])
     print(f"Connection from {connection.device}")
 
-    channel = connection.l2cap_accept(_L2CAP_PSN, _L2CAP_MTU)
+    channel = await connection.l2cap_accept(_L2CAP_PSN, _L2CAP_MTU)
     buf = bytearray(channel.peer_mtu)
     buf[0] = 16
     await channel.send(buf)
