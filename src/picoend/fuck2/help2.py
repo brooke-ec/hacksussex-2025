@@ -3,18 +3,17 @@ from machine import Pin
 import bluetooth
 from ble_simple_peripheral import BLESimplePeripheral
 import time
-import BLEScanner 
 
 # Create a Bluetooth Low Energy (BLE) object
 ble = bluetooth.BLE()
 # Create an instance of the BLESimplePeripheral class with the BLE object
 sp = BLESimplePeripheral(ble)
-
+ble.gap_advertise(None)
 
 # Set the debounce time to 0. Used for switch debouncing
 debounce_time=0
-not_found = False
 
+ble.gap_scan(2000, 30000, 30000)
 
 # Create a Pin object for Pin 0, configure it as an input with a pull-up resistor
 pin = Pin(0, Pin.IN, Pin.PULL_UP)

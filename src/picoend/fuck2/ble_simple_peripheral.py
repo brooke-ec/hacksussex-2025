@@ -11,6 +11,8 @@ from micropython import const
 _IRQ_CENTRAL_CONNECT = const(1)
 _IRQ_CENTRAL_DISCONNECT = const(2)
 _IRQ_GATTS_WRITE = const(3)
+_IRQ_SCAN_RESULT = const(5)
+_IRQ_SCAN_DONE = const(6)
 
 _FLAG_READ = const(0x0002)
 _FLAG_WRITE_NO_RESPONSE = const(0x0004)
@@ -42,6 +44,8 @@ class BLESimplePeripheral:
         self._write_callback = None
         self._payload = advertising_payload(name=name, services=[_UART_UUID])
         self._advertise()
+        self.addr_type = None
+        self.addr = None
 
     def _irq(self, event, data):
         # Track connections so we can send notifications.
@@ -60,6 +64,13 @@ class BLESimplePeripheral:
             value = self._ble.gatts_read(value_handle)
             if value_handle == self._handle_rx and self._write_callback:
                 self._write_callback(value)
+        elif event == _IRQ_SCAN_RESULT:
+            print(data[1])
+            self.addr_type = data[0]
+            self.addr = data[1]
+            self._ble.gap_scan(None)
+        elif event == _IRQ_SCAN_DONE:
+            self._ble.gap_connect(self.addr_type, self.addr)
 
     def send(self, data):
         for conn_handle in self._connections:
