@@ -1,11 +1,12 @@
 import bluetooth
 import asyncio
 import aioble
+from aioble.core import ble
 
 _SERVICE_UUID = bluetooth.UUID(0xbce4)
 _CHARACTERISTIC_UUID = bluetooth.UUID(0x29d2)
 
-_ADV_INTERVAL = const(1000)
+_ADV_INTERVAL = const(3000)
 
 service = aioble.Service(_SERVICE_UUID)
 characteristic = aioble.Characteristic(service, _CHARACTERISTIC_UUID, read=True, write=True, capture=True, notify=True)
@@ -59,7 +60,7 @@ async def listen():
 
 async def search():
     while True:
-        async with aioble.scan(0, 30000, 30000, active=True) as scanner:
+        async with aioble.scan(0, active=True) as scanner:
             async for result in scanner:
                 if  (
                     result.name() == "communiko" and
@@ -68,6 +69,7 @@ async def search():
                 ):
                     device = result.device
                     break
+        ble.gap_scan(None)
         print(f"Found Connection {device.addr_hex()}")
         connection = await result.device.connect()
         if connection is None: continue
