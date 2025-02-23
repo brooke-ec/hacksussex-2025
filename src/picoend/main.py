@@ -11,64 +11,36 @@ service = aioble.Service(_SERVICE_UUID)
 characteristic = aioble.Characteristic(service, _CHARACTERISTIC_UUID, read=True, write=True, capture=True)
 aioble.register_services(service)
 
-class Peer:
-    def __init__(self, device: aioble.Device):
-        self.peer_characteristic: aioble.Characteristic = None
-        self.addr: str = device.addr_hex()
-        self.device = device
-
-    async def start(self):
-        peers[self.addr] = self
-        await self._handle()
-        print(f"Cleaning up {self.addr}")
-        peers.pop(self.addr)
-
-    async def _handle(self):
-        print(f"Connecting to {self.addr}")
-        try:
-            connection = await self.device.connect()
-            if connection is None: return
-
-            peer_service = await connection.service(_SERVICE_UUID)
-            if peer_service is None: return
-
-            self.peer_characteristic = await peer_service.characteristic(_CHARACTERISTIC_UUID)
-            if self.peer_characteristic is None: return
-        except asyncio.TimeoutError:
-            return
-        
-        self.send(b"Teehee test")
-        
-        while connection.is_connected():
-            await asyncio.sleep(500)
-
-    def send(self, payload: bytes):
-        print("Writing")
-        self.peer_characteristic.write(payload)
-
 async def accept():
     while True:
-        connection = await aioble.advertise(_ADV_INTERVAL, name="communiko", services=[_SERVICE_UUID])
-        print(f"Accepting connection from {connection.device.addr_hex()}")
-    
-async def search():
-    while True:
-        async with aioble.scan(0, 30000, 30000, active=True) as scanner:
-            async for result in scanner:
-                if  (
-                    result.name() == "communiko" and
-                    _SERVICE_UUID in result.services() and
-                    result.device.addr_hex() not in peers
-                ):
-                    await Peer(result.device).start()
-
-async def receive():
-    while True:
+        await aioble.advertise(_ADV_INTERVAL, name="communiko", services=[_SERVICE_UUID])
         payload = await characteristic.written()
-        print(f"Recieved {payload}")
+        print(f"Recieved: {payload}")
+
+async def send(payload: bytes):
+    async with aioble.scan(0, 30000, 30000, active=True) as scanner:
+        async for result in scanner:
+            if  (result.name() == "communiko" and _SERVICE_UUID in result.services()):
+                try:
+                    connection = await result.device.connect()
+                    if connection is None: return
+                except asyncio.TimeoutError:
+                    continue
+
+                with connection:                
+                    try:
+                        peer_service = await connection.service(_SERVICE_UUID)
+                        if peer_service is None: return
+
+                        peer_characteristic = await peer_service.characteristic(_CHARACTERISTIC_UUID)
+                        if peer_characteristic is None: return
+                    except asyncio.TimeoutError:
+                        continue
+
+                    peer_characteristic.write(payload)
+                    await asyncio.sleep(1)
 
 async def main():
-    await asyncio.gather(search(), accept(), receive())
+    await asyncio.gather(accept())
 
-peers: dict[str, Peer] = {}
 asyncio.run(main())
