@@ -19,6 +19,7 @@ ble.gap_scan(2000, 30000, 30000)
 pin = Pin(0, Pin.IN, Pin.PULL_UP)
 
 while True:
+
     # Check if the pin value is 0 and if debounce time has elapsed (more than 300 milliseconds)
     if ((pin.value() is 0) and (time.ticks_ms()-debounce_time) > 300):
         # Check if the BLE connection is established
