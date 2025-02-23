@@ -1,7 +1,6 @@
 import bluetooth
 import asyncio
 import aioble
-import gc
 
 _SERVICE_UUID = bluetooth.UUID(0xbce4)
 _CHARACTERISTIC_UUID = bluetooth.UUID(0x29d2)
@@ -14,8 +13,6 @@ aioble.register_services(service)
 
 class Peer:
     def __init__(self, connection):
-        print(f"Mem Free: {gc.mem_free()}")
-        gc.collect()
         self.addr = connection.device.addr_hex()
         self.connection = connection
     
@@ -32,6 +29,8 @@ class Peer:
 
             self.peer_characteristic = await peer_service.characteristic(_CHARACTERISTIC_UUID)
             if self.peer_characteristic is None: return
+
+            del peer_service
 
             await self.peer_characteristic.subscribe(notify=True)
         except asyncio.TimeoutError:
@@ -67,9 +66,12 @@ async def search():
                     _SERVICE_UUID in result.services() and
                     result.device.addr_hex() not in peers
                 ):
-                    connection = await result.device.connect()
-                    if connection is None: continue
-                    await Peer(connection).start()
+                    device = result.device
+                    break
+        print(f"Found Connection {device.addr_hex()}")
+        connection = await result.device.connect()
+        if connection is None: continue
+        await Peer(connection).start()
 
 async def main():
     await asyncio.gather(listen(), search())
