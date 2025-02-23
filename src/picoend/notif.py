@@ -29,10 +29,9 @@ def Buzzer_Control(vol, note, delay1, delay2):
     time.sleep(delay2)
 
 
-button = Pin(8, Pin.IN, Pin.PULL_DOWN)
+button = Pin(10, Pin.IN, Pin.PULL_DOWN)
 gween = Pin(18, Pin.OUT)
-buzzer = PWM(Pin(13))
-
+buzzer = PWM(Pin(9))
 
 display.text("Message recived!", 0,0)
 display.show()
@@ -70,6 +69,8 @@ while(message_recived):
 display.fill(0)
 display.text("Acknowledged!", 0, 0)
 display.show()
+time.sleep(0.3)
+
 
 
 
