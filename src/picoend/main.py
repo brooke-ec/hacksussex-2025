@@ -1,7 +1,7 @@
+import sys
 import bluetooth
 import asyncio
 import aioble
-from aioble.core import ble
 
 _SERVICE_UUID = bluetooth.UUID(0xbce4)
 _CHARACTERISTIC_UUID = bluetooth.UUID(0x29d2)
@@ -21,7 +21,6 @@ class Peer:
         peers[self.addr] = self
         await self._handle()
         peers.pop(self.addr)
-        print(f"Cleaning up: {self.addr}")
     
     async def _handle(self):
         try:
@@ -37,45 +36,45 @@ class Peer:
         except asyncio.TimeoutError:
             return
 
-        asyncio.create_task(self.test())
-
         try:
             while True:
                 msg = await self.peer_characteristic.notified()
-                print(f"Notified: {msg}")
+                sys.stdout.buffer.write(msg)
         except (aioble.DeviceDisconnectedError): ...
 
-    async def test(self):
-        await asyncio.sleep(2)
-        self.send(b"Hehe :3")
-
-    def send(self, content: bytes):
-        characteristic.notify(self.connection, content)
+    async def send(self, content: bytes):
+        for i in range(0, len(content), 20):
+            characteristic.notify(self.connection, content[i:i+20])
+            await asyncio.sleep(0.2)
 
 async def listen():
     while True:
         connection = await aioble.advertise(_ADV_INTERVAL, name="communiko", services=[_SERVICE_UUID])
-        print(f"New Connection from {connection.device}")
         await Peer(connection).start()
 
 async def search():
-    async with aioble.scan(0, 30000, 30000, active=True) as scanner:
+    async with aioble.scan(0, active=True) as scanner:
         async for result in scanner:
-            print(result.device)
             if  (
                 result.name() == "communiko" and
                 _SERVICE_UUID in result.services() and
                 result.device.addr_hex() not in peers
             ):
                 device = result.device
-                print(f"Found Connection {device.addr_hex()}")
                 connection = await result.device.connect()
                 if connection is None: continue
                 scanner.cancel()
                 await Peer(connection).start()
 
+async def input():
+    while True:
+        length = int.from_bytes(sys.stdin.buffer.read(1), "little")
+        payload = sys.stdin.buffer.read(length)
+        for peer in peers.values():
+            peer.send(payload)
+
 async def main():
-    await asyncio.gather(listen(), search())
+    await asyncio.gather(listen(), search(), input())
 
 peers: dict[str, Peer] = {}
 asyncio.run(main())
