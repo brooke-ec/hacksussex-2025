@@ -1,14 +1,10 @@
 import asyncio
 
-from numpy import char
 import bluetooth
 import aioble
 
 _SERVICE_UUID = bluetooth.UUID(0x181A)
 _CHARACTERISTIC_UUID = bluetooth.UUID(0x181A)
-service = aioble.Service(_SERVICE_UUID)
-characteristic = aioble.Characteristic(service, _CHARACTERISTIC_UUID, write=True, notify=True)
-aioble.register_services(service)
 
 async def main():
     async with aioble.scan(5000, 30000, 30000, active=True) as scanner:
@@ -23,6 +19,11 @@ async def main():
         print(f"Found {device}")
         connection = await device.connect()
         
-        characteristic.notify(connection, "Hello World")
+        service = await connection.service(_SERVICE_UUID)
+        characteristic = await service.characteristic(_CHARACTERISTIC_UUID)
+
+        msg = await characteristic.read()
+
+        print(f"Recieved: {msg}")
 
 asyncio.run(main())
