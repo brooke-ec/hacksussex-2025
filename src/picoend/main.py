@@ -1,9 +1,10 @@
 import bluetooth
 import asyncio
 import aioble
+import random
 
-_SERVICE_UUID = bluetooth.UUID(0xbce3)
-_CHARACTERISTIC_UUID = bluetooth.UUID(0x29d6)
+_SERVICE_UUID = bluetooth.UUID(0xbce4)
+_CHARACTERISTIC_UUID = bluetooth.UUID(0x29d2)
 
 _ADV_INTERVAL = const(1000)
 
@@ -16,13 +17,11 @@ class Peer:
         self.addr = connection.device.addr_hex()
         self.connection = connection
     
-    def start(self):
+    async def start(self):
         peers[self.addr] = self
-        async def wrapper():
-            await self._handle()
-            peers.pop(self.addr)
-            print(f"Cleaning up: {self.addr}")
-        asyncio.create_task(wrapper())
+        await self._handle()
+        peers.pop(self.addr)
+        print(f"Cleaning up: {self.addr}")
     
     async def _handle(self):
         try:
@@ -55,7 +54,7 @@ async def listen():
     while True:
         connection = await aioble.advertise(_ADV_INTERVAL, name="communiko", services=[_SERVICE_UUID])
         print(f"New Connection from {connection.device}")
-        Peer(connection).start()
+        await Peer(connection).start()
 
 async def search():
     while True:
@@ -68,7 +67,7 @@ async def search():
                 ):
                     connection = await result.device.connect()
                     if connection is None: continue
-                    Peer(connection).start()
+                    await Peer(connection).start()
 
 async def main():
     await asyncio.gather(listen(), search())
