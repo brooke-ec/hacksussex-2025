@@ -39,7 +39,8 @@ class Peer:
         
         self.send(b"Teehee test")
         
-        await connection.device_task()
+        while connection.is_connected():
+            await asyncio.sleep(500)
 
     def send(self, payload: bytes):
         print("Writing")
