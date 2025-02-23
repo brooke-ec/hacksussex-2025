@@ -87,8 +87,7 @@ class BLETemperature:
         temp_deg_c = 'i am a string'.encode()
         print(temp_deg_c)
         print(len(temp_deg_c))
-        self.sender(0,str((len(temp_deg_c))),notify,indicate)
-        time.sleep(15)
+        self.sender(0,((len(temp_deg_c))),notify,indicate)
         self.sender(1,temp_deg_c,notify,indicate)
 
     def _advertise(self, interval_us=500000):

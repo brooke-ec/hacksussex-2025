@@ -221,7 +221,7 @@ class BLETemperatureCentral:
                                  
             elif self.receivedSize == 1:
                 print(self.size)
-                print(data)
+                print(data.decode())
                 self.receivedSize = 0
         except OSError as error:
             print(error)
