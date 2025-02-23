@@ -39,9 +39,11 @@ class Peer:
 
         asyncio.create_task(self.test())
 
-        while True:
-            msg = await self.peer_characteristic.notified()
-            print(f"Notified: {msg}")
+        try:
+            while True:
+                msg = await self.peer_characteristic.notified()
+                print(f"Notified: {msg}")
+        except (aioble.DeviceDisconnectedError): ...
 
     async def test(self):
         await asyncio.sleep(2)
