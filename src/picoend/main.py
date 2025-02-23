@@ -1,7 +1,7 @@
 import bluetooth
 import asyncio
 import aioble
-import random
+import gc
 
 _SERVICE_UUID = bluetooth.UUID(0xbce4)
 _CHARACTERISTIC_UUID = bluetooth.UUID(0x29d2)
@@ -14,6 +14,8 @@ aioble.register_services(service)
 
 class Peer:
     def __init__(self, connection):
+        print(f"Mem Free: {gc.mem_free()}")
+        gc.collect()
         self.addr = connection.device.addr_hex()
         self.connection = connection
     
