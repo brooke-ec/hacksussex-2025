@@ -15,8 +15,5 @@ function addNewMessage(name, message){
     window.scrollTo(0, document.body.scrollHeight);
 }
 window.addEventListener("load", function(){
-    addNewMessage("Bob", "No >:(")
-    addNewMessage("Bob", "No >:(")
-    addNewMessage("Bob", "No >:(")
-    addNewMessage("Bob", "No >:(")
+    addNewMessage("Bob", "Welcome to Communiko, a lovely messaging platform that uses Pico Ws to send messages via bluetooth!")
 })
