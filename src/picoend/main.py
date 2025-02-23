@@ -22,7 +22,7 @@ class Peer:
         async def wrapper():
             await self._handle()
             peers.pop(self.addr)
-        asyncio.create_task(wrapper)
+        asyncio.create_task(wrapper())
 
     async def _handle(self):
         print(f"Connecting to {self.addr}")
