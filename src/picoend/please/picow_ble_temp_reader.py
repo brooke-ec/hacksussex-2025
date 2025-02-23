@@ -216,19 +216,12 @@ class BLETemperatureCentral:
         try:
             print (self.receivedSize)
             if self.receivedSize == 0:
-                self.size = struct.unpack("<3s", data)[0]
-                print(self.size)
-                self.size = str(self.size)[2:5]
-                print(self.size)
-                self.receivedSize = 1              
+                self.size = int.from_bytes(data, "little")
+                print(self.size)            
                                  
             elif self.receivedSize == 1:
                 print(self.size)
-                while str(self.size)[0] == "0":
-                    self.size = str(self.size)[1:len(str(self.size))] 
-                    print(self.size)
-                self.size = int(self.size) - 1
-                self._value = struct.unpack(f"<{(self.size)}s", data)
+                print(data)
                 self.receivedSize = 0
         except OSError as error:
             print(error)

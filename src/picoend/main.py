@@ -40,7 +40,12 @@ async def send(payload: bytes):
                     peer_characteristic.write(payload)
                     await asyncio.sleep(1)
 
+async def sendafter():
+    await asyncio.sleep(5)
+    print("Sending")
+    await send(b"Teehee")
+
 async def main():
-    await asyncio.gather(accept())
+    await asyncio.gather(accept(), sendafter())
 
 asyncio.run(main())

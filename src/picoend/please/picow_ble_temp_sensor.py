@@ -68,13 +68,11 @@ class BLETemperature:
     def sender(self,type,message,notify=False, indicate=False):
         print(message)
         if type == 0:
-            while len(message)<3:
-                message = "0" + message
             print(message)
-            self._ble.gatts_write(self._handle, struct.pack("<3s", str(message)))
+            self._ble.gatts_write(self._handle, message.to_bytes(1, "little"))
         elif type == 1:
             print(len(message))
-            self._ble.gatts_write(self._handle, struct.pack(f"<{len(message)}s", message))
+            self._ble.gatts_write(self._handle, message)
         for conn_handle in self._connections:
             if notify or indicate:
                 if notify:
@@ -86,8 +84,8 @@ class BLETemperature:
                 
     def update_temperature(self, notify=False, indicate=False):
         # Write the local value, ready for a central to read.
-        temp_deg_c = 'i am a string'
-        print(temp_deg_c);
+        temp_deg_c = 'i am a string'.encode()
+        print(temp_deg_c)
         print(len(temp_deg_c))
         self.sender(0,str((len(temp_deg_c))),notify,indicate)
         time.sleep(15)
