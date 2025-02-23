@@ -1,7 +1,9 @@
+from logging import NullHandler
 from api import Api
 import webview
 #import cryptography # type: ignore
 from os import path
+from communiko import CommunikoBookworm
 
 
 def handler():
@@ -9,11 +11,26 @@ def handler():
   print(f'Active window: {webview.active_window()}')
 
 def logic():
-   #window.evaluate_js('C:/Users/jh2046/Documents/GitHub/hacksussex-2025/src/frontend/main.js')
-   print("aaa")
+   #reading meesages from pico
+   def consumer(input):
+      output = input.decode()
+      results = output.split(":")
+      sender = results[0]
+      message = results[1]
+      window.evaluate_js(f"addNewMessage('{sender}', '{message}')")
+    
+         
+   bookworm.join(bookworm, consumer)
+   
+
+   
+
 
 def on_closing():
     print("Such devastation... this was NOT my intention")
+
+
+bookworm = CommunikoBookworm()
 
 
 #print(os.getcwd())

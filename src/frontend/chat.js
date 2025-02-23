@@ -2,9 +2,9 @@ function sendNewMessage(name, message){
     if (message == ""){
         return;
     }
-    //window.pywebview.api.funcName(name, message)
+    window.pywebview.api.send(name, message);
     document.getElementById("message").value = "";
-    addNewMessage(name, message)
+    addNewMessage(name, message);
 }
 function addNewMessage(name, message){
     colour = name.toString(16);
@@ -18,5 +18,5 @@ function addNewMessage(name, message){
     window.scrollTo(0, document.body.scrollHeight);
 }
 window.addEventListener("load", function(){
-    addNewMessage("Bob", "Welcome to Communiko, a lovely messaging platform that uses Pico Ws to send messages via bluetooth!")
+    addNewMessage("Bob", "Welcome to Communiko, a lovely messaging platform that uses Pico Ws to send messages via bluetooth!");
 })
