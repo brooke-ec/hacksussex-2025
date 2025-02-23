@@ -37,9 +37,15 @@ class Peer:
         except asyncio.TimeoutError:
             return
 
+        asyncio.create_task(self.test())
+
         while True:
             msg = await self.peer_characteristic.notified()
             print(f"Notified: {msg}")
+
+    async def test(self):
+        await asyncio.sleep(2)
+        self.send(b"Hehe :3")
 
     def send(self, content: bytes):
         characteristic.notify(self.connection, content)
@@ -62,10 +68,6 @@ async def search():
                     connection = await result.device.connect()
                     if connection is None: continue
                     Peer(connection).start()
-
-async def test():
-    await asyncio.sleep(5)
-    next(peers).send(b"Hehe")
 
 async def main():
     await asyncio.gather(listen(), search())
