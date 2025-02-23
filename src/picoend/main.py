@@ -68,7 +68,7 @@ class Peer:
         await self.send(b"Heheaaguifsyoidghsojkdgvsehoisetugjksetgeutiogseegohsui :3")
 
     def send(self, payload: bytes):
-        self.output.append(payload)
+        self.output.enqueue(payload)
         if self.output.is_empty():
             self._send_segment()
 
