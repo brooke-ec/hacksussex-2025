@@ -19,8 +19,7 @@ async def listen():
     
     print(f"Connection From {connection.device}")
 
-    characteristic.write(b"Hello World", send_update=True)
-    await asyncio.sleep(1)
+    msg = await characteristic.written()
+    print(f"Recieved: {msg}")
 
-asyncio.create_task(listen())
-asyncio.create_task(search())
+asyncio.run(listen())

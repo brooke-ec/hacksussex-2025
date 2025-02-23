@@ -22,8 +22,6 @@ async def main():
         service = await connection.service(_SERVICE_UUID)
         characteristic = await service.characteristic(_CHARACTERISTIC_UUID)
 
-        msg = await characteristic.read()
-
-        print(f"Recieved: {msg}")
-
+        characteristic.write(b"Hello World")
+        await asyncio.sleep(1)
 asyncio.run(main())
