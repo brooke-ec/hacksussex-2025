@@ -13,7 +13,6 @@ aioble.register_services(service)
 
 class Peer:
     def __init__(self, device: aioble.Device):
-        super().__init__(device.addr_hex())
         self.peer_characteristic: aioble.Characteristic = None
         self.addr: str = device.addr_hex()
         self.device = device
