@@ -23,5 +23,5 @@ async def main():
         characteristic = await service.characteristic(_CHARACTERISTIC_UUID)
 
         characteristic.write(b"Hello World")
-        await asyncio.sleep(1)
+        await asyncio.sleep(10)
 asyncio.run(main())
