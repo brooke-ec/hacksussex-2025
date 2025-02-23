@@ -10,7 +10,7 @@ aioble.register_services(service)
 
 _ADV_INTERVAL = const(1000)
 
-async def main():
+async def listen():
     connection = await aioble.advertise(
             _ADV_INTERVAL,
             name="communiko",
@@ -22,4 +22,5 @@ async def main():
     characteristic.write(b"Hello World", send_update=True)
     await asyncio.sleep(1)
 
-asyncio.run(main())
+asyncio.create_task(listen())
+asyncio.create_task(search())

@@ -17,13 +17,11 @@ class Peer:
         self.addr: str = device.addr_hex()
         self.device = device
 
-    def start(self):
+    async def start(self):
         peers[self.addr] = self
-        async def wrapper():
-            await self._handle()
-            print(f"Cleaning up {self.addr}")
-            peers.pop(self.addr)
-        asyncio.create_task(wrapper())
+        await self._handle()
+        print(f"Cleaning up {self.addr}")
+        peers.pop(self.addr)
 
     async def _handle(self):
         print(f"Connecting to {self.addr}")
@@ -44,6 +42,7 @@ class Peer:
         await connection.device_task()
 
     def send(self, payload: bytes):
+        print("Writing")
         self.peer_characteristic.write(payload)
 
 async def accept():
@@ -60,15 +59,15 @@ async def search():
                     _SERVICE_UUID in result.services() and
                     result.device.addr_hex() not in peers
                 ):
-                    Peer(result.device).start()
+                    await Peer(result.device).start()
 
-async def recieve():
+async def receive():
     while True:
         payload = await characteristic.written()
         print(f"Recieved {payload}")
 
 async def main():
-    await asyncio.gather(search(), accept(), recieve())
+    await asyncio.gather(search(), accept(), receive())
 
 peers: dict[str, Peer] = {}
 asyncio.run(main())
