@@ -2,7 +2,7 @@ function sendNewMessage(name, message){
     if (message == ""){
         return;
     }
-    window.pywebview.api.send(name, message);
+    //window.pywebview.api.send(name, message);
     document.getElementById("message").value = "";
     addNewMessage(name, message);
 }

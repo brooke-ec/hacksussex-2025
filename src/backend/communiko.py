@@ -9,7 +9,7 @@ import time
 
 class CommunikoBookworm:
     def __init__(self) -> None:
-        self.serial = self._connect()
+        ...
 
     def join(self, consumer: Callable[[bytes], Any]):
         while True:
@@ -34,7 +34,3 @@ class CommunikoBookworm:
                     if not er.args[0].startswith("failed to access"):
                         raise er
         raise TransportError("no device found")
-
-bookworm = CommunikoBookworm()
-threading.Thread(target=lambda: bookworm.write("".encode())).start()
-bookworm.join(print)
