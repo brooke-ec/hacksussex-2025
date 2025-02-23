@@ -1,7 +1,6 @@
 import bluetooth
 import asyncio
 import aioble
-import random
 
 _SERVICE_UUID = bluetooth.UUID(0xbce3)
 _CHARACTERISTIC_UUID = bluetooth.UUID(0x29d6)
@@ -12,10 +11,27 @@ service = aioble.Service(_SERVICE_UUID)
 characteristic = aioble.Characteristic(service, _CHARACTERISTIC_UUID, read=True, write=True, capture=True, notify=True)
 aioble.register_services(service)
 
+class ByteQueue:
+    def __init__(self):
+        self._array = bytearray()
+    
+    def is_empty(self):
+        return len(self._array) == 0
+    
+    def enqueue(self, buf: bytes):
+        for b in buf:
+            self._array.append(b)
+
+    def dequeue(self, amount: int = 1):
+        segment = bytearray()
+        for _ in range(min(len(self._array, amount))):
+            segment.append(self._array.pop())
+
 class Peer:
     def __init__(self, connection):
         self.addr = connection.device.addr_hex()
         self.connection = connection
+        self.output = ByteQueue()
     
     def start(self):
         peers[self.addr] = self
@@ -34,8 +50,7 @@ class Peer:
             if self.peer_characteristic is None: return
 
             await self.peer_characteristic.subscribe(notify=True)
-        except asyncio.TimeoutError:
-            return
+        except asyncio.TimeoutError: return
 
         asyncio.create_task(self.test())
 
@@ -43,14 +58,22 @@ class Peer:
             while True:
                 msg = await self.peer_characteristic.notified()
                 print(f"Notified: {msg}")
-        except (aioble.DeviceDisconnectedError): ...
+
+                if msg == b"\0" and self.output.is_empty(): self._send_segment()
+                else: self.send(b"\0") # Request next segment
+        except aioble.DeviceDisconnectedError: return
 
     async def test(self):
         await asyncio.sleep(2)
-        self.send(b"Hehe :3")
+        await self.send(b"Heheaaguifsyoidghsojkdgvsehoisetugjksetgeutiogseegohsui :3")
 
-    def send(self, content: bytes):
-        characteristic.notify(self.connection, content)
+    def send(self, payload: bytes):
+        self.output.append(payload)
+        if self.output.is_empty():
+            self._send_segment()
+
+    def _send_segment(self):
+        characteristic.notify(self.connection, self.output.dequeue(20))
 
 async def listen():
     while True:
