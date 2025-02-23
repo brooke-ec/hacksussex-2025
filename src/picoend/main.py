@@ -50,7 +50,7 @@ class Peer:
     async def send(self, payload: bytes):
         for i in range(0, len(payload), 20):
             characteristic.notify(self.connection, payload[i:i+20])
-            await asyncio.sleep(200)
+            await asyncio.sleep(0.2)
 
 async def listen():
     while True:
