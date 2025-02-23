@@ -33,7 +33,8 @@ class Peer:
             if self.peer_characteristic is None: return
 
             await self.peer_characteristic.subscribe(notify=True)
-        except asyncio.TimeoutError: return
+        except asyncio.TimeoutError:
+            return
 
         asyncio.create_task(self.test())
 
@@ -41,16 +42,14 @@ class Peer:
             while True:
                 msg = await self.peer_characteristic.notified()
                 print(f"Notified: {msg}")
-        except aioble.DeviceDisconnectedError: return
+        except (aioble.DeviceDisconnectedError): ...
 
     async def test(self):
         await asyncio.sleep(2)
-        await self.send(b"Heheaaguifsyoidghsojkdgvsehoisetugjksetgeutiogseegohsui :3")
+        self.send(b"Hehe :3")
 
-    async def send(self, payload: bytes):
-        for i in range(0, len(payload), 20):
-            characteristic.notify(self.connection, payload[i:i+20])
-            await asyncio.sleep(0.2)
+    def send(self, content: bytes):
+        characteristic.notify(self.connection, content)
 
 async def listen():
     while True:
