@@ -1,6 +1,7 @@
 import bluetooth
 import asyncio
 import aioble
+import random
 
 _SERVICE_UUID = bluetooth.UUID(0xbce3)
 _CHARACTERISTIC_UUID = bluetooth.UUID(0x29d6)
@@ -12,11 +13,11 @@ characteristic = aioble.Characteristic(service, _CHARACTERISTIC_UUID, read=True,
 aioble.register_services(service)
 
 class Peer:
-    def __init__(self, addr: str):
-        self.addr = addr
+    def __init__(self, connection):
+        self.addr = connection.device.addr_hex()
+        self.connection = connection
     
     def start(self):
-        print(self.addr)
         peers[self.addr] = self
         async def wrapper():
             await self._handle()
@@ -25,42 +26,29 @@ class Peer:
         asyncio.create_task(wrapper())
     
     async def _handle(self):
-        ...
-
-
-class IncomingPeer(Peer):
-    ...
-
-
-class OutgoingPeer(Peer):
-    def __init__(self, device: aioble.Device):
-        super().__init__(device.addr_hex())
-        self.device = device
-
-    async def _handle(self):
         try:
-            connection = await self.device.connect()
-            if connection is None: return
-
-            peer_service = await connection.service(_SERVICE_UUID)
+            peer_service = await self.connection.service(_SERVICE_UUID)
             if peer_service is None: return
 
-            peer_characteristic = await peer_service.characteristic(_CHARACTERISTIC_UUID)
-            if peer_characteristic is None: return
+            self.peer_characteristic = await peer_service.characteristic(_CHARACTERISTIC_UUID)
+            if self.peer_characteristic is None: return
 
-            await peer_characteristic.subscribe(notify=True)
+            await self.peer_characteristic.subscribe(notify=True)
         except asyncio.TimeoutError:
             return
 
         while True:
-            msg = await peer_characteristic.notified()
+            msg = await self.peer_characteristic.notified()
             print(f"Notified: {msg}")
-            msg = await peer_characteristic.read()
+
+    def send(self, content: bytes):
+        characteristic.notify(self.connection, content)
 
 async def listen():
-    connection = await aioble.advertise(_ADV_INTERVAL, name="communiko", services=[_SERVICE_UUID])
-    print(f"New Connection from {connection.device}")
-    await Peer(characteristic).join()
+    while True:
+        connection = await aioble.advertise(_ADV_INTERVAL, name="communiko", services=[_SERVICE_UUID])
+        print(f"New Connection from {connection.device}")
+        Peer(connection).start()
 
 async def search():
     while True:
@@ -71,12 +59,16 @@ async def search():
                     _SERVICE_UUID in result.services() and
                     result.device.addr_hex() not in peers
                 ):
-                    OutgoingPeer(result.device).start()
+                    connection = await result.device.connect()
+                    if connection is None: continue
+                    Peer(connection).start()
 
-                    
+async def test():
+    await asyncio.sleep(5)
+    next(peers).send(b"Hehe")
 
 async def main():
-    await asyncio.gather(search())
+    await asyncio.gather(listen(), search())
 
 peers: dict[str, Peer] = {}
 asyncio.run(main())
