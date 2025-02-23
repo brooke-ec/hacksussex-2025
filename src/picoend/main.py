@@ -65,7 +65,7 @@ class Peer:
 
     async def test(self):
         await asyncio.sleep(2)
-        await self.send(b"Heheaaguifsyoidghsojkdgvsehoisetugjksetgeutiogseegohsui :3")
+        self.send(b"Heheaaguifsyoidghsojkdgvsehoisetugjksetgeutiogseegohsui :3")
 
     def send(self, payload: bytes):
         self.output.enqueue(payload)
