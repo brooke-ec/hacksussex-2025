@@ -8,7 +8,7 @@ _CHARACTERISTIC_UUID = bluetooth.UUID(0x29d6)
 _ADV_INTERVAL = const(1000)
 
 service = aioble.Service(_SERVICE_UUID)
-characteristic = aioble.Characteristic(service, _CHARACTERISTIC_UUID, read=True, write=True, capture=True, indicate=True)
+characteristic = aioble.Characteristic(service, _CHARACTERISTIC_UUID, read=True, write=True, capture=True)
 aioble.register_services(service)
 
 class Peer:
@@ -21,6 +21,7 @@ class Peer:
         peers[self.addr] = self
         async def wrapper():
             await self._handle()
+            print(f"Cleaning up {self.addr}")
             peers.pop(self.addr)
         asyncio.create_task(wrapper())
 
@@ -38,7 +39,12 @@ class Peer:
         except asyncio.TimeoutError:
             return
         
+        self.send(b"Teehee test")
+        
         await connection.device_task()
+
+    def send(self, payload: bytes):
+        self.peer_characteristic.write(payload)
 
 async def accept():
     while True:
@@ -56,10 +62,13 @@ async def search():
                 ):
                     Peer(result.device).start()
 
-                    
+async def recieve():
+    while True:
+        payload = await characteristic.written()
+        print(f"Recieved {payload}")
 
 async def main():
-    await asyncio.gather(search(), accept())
+    await asyncio.gather(search(), accept(), recieve())
 
 peers: dict[str, Peer] = {}
 asyncio.run(main())
