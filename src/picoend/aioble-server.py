@@ -5,12 +5,12 @@ import aioble
 _SERVICE_UUID = bluetooth.UUID(0x181A)
 _CHARACTERISTIC_UUID = bluetooth.UUID(0x181A)
 service = aioble.Service(_SERVICE_UUID)
-characteristic = aioble.Characteristic(service, _CHARACTERISTIC_UUID, write=True, notify=True)
+characteristic = aioble.Characteristic(service, _CHARACTERISTIC_UUID, read=True, notify=True)
 aioble.register_services(service)
 
 _ADV_INTERVAL = const(1000)
 
-async def main():
+async def listen():
     connection = await aioble.advertise(
             _ADV_INTERVAL,
             name="communiko",
@@ -19,9 +19,8 @@ async def main():
     
     print(f"Connection From {connection.device}")
 
-    await characteristic.written()
-    msg = characteristic.read()
+    characteristic.write(b"Hello World", send_update=True)
+    await asyncio.sleep(1)
 
-    print(f"Recieved: {msg}")
-
-asyncio.run(main())
+asyncio.create_task(listen())
+asyncio.create_task(search())
